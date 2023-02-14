@@ -1,4 +1,4 @@
-export default function createKeyboardListener() {
+function createKeyboardListener(document) {
     const state = {
         observers: []
     }
@@ -31,3 +31,5 @@ export default function createKeyboardListener() {
         subscribe
     }
 }
+
+export default createKeyboardListener
