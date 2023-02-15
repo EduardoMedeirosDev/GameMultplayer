@@ -1,4 +1,4 @@
-function renderScreen(screen, game, requestAnimationFrame) {
+function renderScreen(screen, game, requestAnimationFrame, currentPlayerId) {
     const ctx = screen.getContext('2d')
     ctx.fillStyle = 'white'
     ctx.fillRect(0, 0, 10, 10)
@@ -15,8 +15,15 @@ function renderScreen(screen, game, requestAnimationFrame) {
         ctx.fillRect(fruit.x, fruit.y, 1, 1)
     }
 
+    const currentPlayer = game.state.players[currentPlayerId]
+
+    if (currentPlayer) {
+        ctx.fillStyle = '#d21617'
+        ctx.fillRect(currentPlayer.x, currentPlayer.y, 1, 1)
+    }
+
     requestAnimationFrame(() => {
-        renderScreen(screen, game, requestAnimationFrame)
+        renderScreen(screen, game, requestAnimationFrame, currentPlayerId)
     })
 }
 
