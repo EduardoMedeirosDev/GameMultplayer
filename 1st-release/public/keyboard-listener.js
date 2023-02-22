@@ -3,7 +3,6 @@ function createKeyboardListener(document) {
         observers: [],
         playerId: null
     }
-
     function registerPlayerId(playerId){
         state.playerId = playerId
     }
@@ -12,10 +11,13 @@ function createKeyboardListener(document) {
         state.observers.push(observerFunction)
     }
 
-    function unsubscribe(observerFunction) {
-        state.observers = state.observers.filter(subscriber => subscriber !== observerFunction);
+    function unsubscribeAll(observerFunction) {
+        const index = state.observers.indexOf(observerFunction)
+        if (index > -1) {
+            state.observers.splice(index, 100);
+        } 
     }
-
+   
     function notifyAll(command) {
         for (const observerFunction of state.observers) {
             observerFunction(command)
@@ -37,7 +39,7 @@ function createKeyboardListener(document) {
 
     return {
         subscribe,
-        unsubscribe,
+        unsubscribeAll,
         registerPlayerId
     }
 }

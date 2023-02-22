@@ -50,12 +50,13 @@
             socket.on('setup', (state) => {
                 const playerId = socket.id       
                 game.setState(state)
-
-                KeyboardListener.registerPlayerId(playerId)
-                KeyboardListener.subscribe(game.movePlayer)
+                KeyboardListener.registerPlayerId(playerId)                
+                KeyboardListener.unsubscribeAll(game.movePlayer) 
+                KeyboardListener.subscribe(game.movePlayer)             
                 KeyboardListener.subscribe((command) => {
                     socket.emit('move-player', command)
-                })                                                    
+                })
+                                        
             })
 
             socket.on('add-player', (command) => {
@@ -87,6 +88,7 @@
                 console.log(`Receiving ${command.type} -> ${command.fruitId}`)
                 game.removeFruit(command)
             })
+
         </script>
     </canvas>
 </body>
