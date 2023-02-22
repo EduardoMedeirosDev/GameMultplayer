@@ -5,7 +5,7 @@ function createGame() {
         screen: {
             width: 15,
             height: 15, 
-        },
+        }
     }
 
     const observers = []
@@ -21,16 +21,18 @@ function createGame() {
     }
 
     function unsubscribe(observerFunction) {
-        observers = observers.filter(subscriber => subscriber !== observerFunction);
+        const index = observers.lastIndexOf(observerFunction)
+        if (index > 1) {
+            observers.splice(index, 1);
+        } 
     }
 
     function notifyAll(command) {
 
         for (const observerFunction of observers) {
-            observerFunction(command)
+            observerFunction(command);
         }
     }
-
 
     function setState(newState) {
         Object.assign(state, newState)
