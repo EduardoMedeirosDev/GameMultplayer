@@ -3,21 +3,25 @@ function createGame() {
         players: {},
         fruits: {},
         screen: {
-            width: 10,
-            height: 10
-        }
+            width: 15,
+            height: 15, 
+        },
     }
 
     const observers = []
 
     function start() {
-        const frequency = 2000
+        const frequency = 10000
 
         setInterval(addFruit, frequency)
     }
 
     function subscribe(observerFunction) {
         observers.push(observerFunction)
+    }
+
+    function unsubscribe(observerFunction) {
+        observers = observers.filter(subscriber => subscriber !== observerFunction);
     }
 
     function notifyAll(command) {
@@ -142,6 +146,7 @@ function createGame() {
         state,
         setState,
         subscribe,
+        unsubscribe,
         start
     }
 }
