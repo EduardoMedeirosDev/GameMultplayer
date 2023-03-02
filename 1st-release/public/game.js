@@ -1,7 +1,9 @@
+import { mod } from "./utils.js"
+
 function createGame() {
     const state = {
         players: {},
-        fruits: {},
+        fruits: {},        
         screen: {
             width: 15,
             height: 15, 
@@ -20,13 +22,6 @@ function createGame() {
         observers.push(observerFunction)
     }
 
-    function unsubscribe(observerFunction) {
-        const index = observers.lastIndexOf(observerFunction)
-        if (index > 1) {
-            observers.splice(index, 1);
-        } 
-    }
-
     function notifyAll(command) {
 
         for (const observerFunction of observers) {
@@ -42,17 +37,20 @@ function createGame() {
         const playerId = command.playerId
         const playerX = 'playerX' in command ? command.playerX : Math.floor(Math.random() * state.screen.width)
         const playerY = 'playerY' in command ? command.playerY : Math.floor(Math.random() * state.screen.height)
+        const score = 0
 
         state.players[playerId] = {
             x: playerX,
-            y: playerY
+            y: playerY,
+            score
         }
 
         notifyAll({
             type: 'add-player',
             playerId: playerId,
             playerX: playerX,
-            playerY: playerY
+            playerY: playerY,
+            score
         })
     }
 
@@ -68,7 +66,7 @@ function createGame() {
     }
 
     function addFruit(command) {
-        const fruitId = command ? command.fruitId : Math.floor(Math.random() * 1000000)
+        const fruitId = command ? command.fruitId : Math.floor(Math.random() * 10000000)
         const fruitX = command ? command.fruitX : Math.floor(Math.random() * state.screen.width)
         const fruitY = command ? command.fruitY : Math.floor(Math.random() * state.screen.height)
 
@@ -96,22 +94,21 @@ function createGame() {
         })
     }
 
-
     function movePlayer(command) {   
         notifyAll(command) 
          
         const acceptedMoves = {
             ArrowUp(player) {
-                if ( player.y - 1 >= 0 ) { return player.y-- }
+                player.y = mod(state.screen.height, player.y - 1)
             },
             ArrowDown(player) {
-                if (player.y + 1 < state.screen.height) {return player.y++ }
+                player.y = mod(state.screen.height, player.y + 1)
             },        
             ArrowLeft(player) {
-                if (player.x - 1 >= 0) {  return player.x-- }
+                player.x = mod(state.screen.width, player.x - 1)
             },
             ArrowRight(player) {
-                if (player.x + 1 < state.screen.width) { return player.x++ }
+                player.x = mod(state.screen.width, player.x + 1)
             },
         }
 
@@ -130,11 +127,12 @@ function createGame() {
         
         for (const fruitId in state.fruits) {
             const fruit = state.fruits[fruitId]
-            console.log(`Checking ${playerId} and ${fruitId}`)
+            //console.log(`Checking ${playerId} and ${fruitId}`)
 
             if (player.x === fruit.x && player.y === fruit.y) {
-                console.log(`COLLISION between ${playerId} and ${fruitId}`)
+                //console.log(`COLLISION between ${playerId} and ${fruitId}`)
                 removeFruit({fruitId: fruitId})
+                player.score += 1
             }
         }
     }
@@ -148,7 +146,6 @@ function createGame() {
         state,
         setState,
         subscribe,
-        unsubscribe,
         start
     }
 }
